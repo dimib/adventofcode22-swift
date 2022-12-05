@@ -1,35 +1,6 @@
 //: [Previous](@previous)
 
-import Foundation
-import Combine
-
-print("Advent of Code 22 - Day 3")
-
-/*
- 
- Step 1: Split each line into equal parts
- 
- vJrwpWtwJgWr - hcsFMMfFFhFp
- jqHRNqRjqzjGDLGL - xrsFMfFZSrLrFZsSL
- PmmdzqPrV - vPwwTWBwg
- 
- Step 2: Find equal items in both parts
- vJrw(p)WtwJgWr - hcsFMMfFFhF(p)
- 
- Step 3: Convert the duplicate characters into Priorities
- 
- Step 4: Add all priorities
- */
-
-fileprivate func readData() -> String? {
-    guard let url = Bundle.main.url(forResource: "rucksackitems", withExtension: "txt"),
-          let calories = try? Data(contentsOf: url) else {
-        print("No Input")
-        return nil
-    }
-
-    return String(decoding: calories, as: UTF8.self)
-}
+1
 let priorities = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
