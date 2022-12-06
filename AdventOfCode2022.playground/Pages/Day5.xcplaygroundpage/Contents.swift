@@ -11,6 +11,9 @@ extension Int {
     }
 }
 
+typealias Matrix = [[Character]]
+typealias MovingFunction = (Matrix, Int, Int, Int) -> Matrix
+
 fileprivate func readData() -> String? {
     guard let url = Bundle.main.url(forResource: "crates", withExtension: "txt"),
           let calories = try? Data(contentsOf: url) else {
@@ -24,9 +27,9 @@ fileprivate func readData() -> String? {
 let numberOfStacks = 9
 let indexes: [Int] = [1, 5, 9, 13, 17, 21, 25, 29, 33]
 
-private func makeCrateStacks(lines: [String.SubSequence]) -> [[Character]] {
+private func makeCrateStacks(lines: [String.SubSequence]) -> Matrix {
 
-    var matrix: [[Character]] = [
+    var matrix: Matrix = [
         [],
         [],
         [],
@@ -45,7 +48,6 @@ private func makeCrateStacks(lines: [String.SubSequence]) -> [[Character]] {
         for stack in 0..<numberOfStacks {
             let index = String.Index(utf16Offset: indexes[stack], in: newLine)
             let char = newLine[index]
-            print("\(char)")
             if char != " " {
                 matrix[stack].insert(char, at: 0)
             }
@@ -55,8 +57,41 @@ private func makeCrateStacks(lines: [String.SubSequence]) -> [[Character]] {
     return matrix
 }
 
-
 if let data = readData() {
+    move(data: data) { stacks, num, from, to in
+        var stacks = stacks
+        for _ in 0..<num {
+            guard let char = stacks[from - 1].last else {
+                fatalError("No create to move")
+            }
+
+            stacks[from - 1].removeLast()
+            stacks[to - 1].append(char)
+        }
+        return stacks
+    }
+
+    move(data: data) { stacks, num, from, to in
+        var stacks = stacks
+
+        var tmpStack: [Character] = []
+        for _ in 0..<num {
+            guard let char = stacks[from - 1].last else {
+                fatalError("No create to move")
+            }
+
+            stacks[from - 1].removeLast()
+            tmpStack.append(char)
+        }
+        tmpStack.reversed().forEach { char in
+            stacks[to - 1].append(char)
+        }
+
+        return stacks
+    }
+}
+
+func move(data: String, moving: MovingFunction) {
     let lines = data.split(separator: "\n")
 
     var stacks = makeCrateStacks(lines: lines)
@@ -69,15 +104,7 @@ if let data = readData() {
                   let to = Int(parts[5]), to.isBetween(1, and: 9) else {
                 fatalError("Wrong line format \(line) or out of bounds")
             }
-            print("move \(num) \(from) => \(to)")
-
-            for _ in 0..<num {
-                guard let char = stacks[from - 1].last else {
-                    fatalError("No create to move")
-                }
-                stacks[from - 1].removeLast()
-                stacks[to - 1].append(char)
-            }
+            stacks = moving(stacks, num, from, to)
         }
     }
 
@@ -89,8 +116,8 @@ if let data = readData() {
         }
     }
     print("top creates are \(topCreates.joined())")
-}
 
+}
 
 
 //: [Next](@next)
