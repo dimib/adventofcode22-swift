@@ -1,7 +1,6 @@
 //: [Previous](@previous)
 
 import Foundation
-import Combine
 
 print("Advent of Code 22 - Day 4")
 
